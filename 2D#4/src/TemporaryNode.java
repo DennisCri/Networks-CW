@@ -44,11 +44,18 @@ public class TemporaryNode implements TemporaryNodeInterface {
             writer.write("START 1 " + startingNodeName + "\n");
             writer.flush();
 
-            // Wait for START message from the server
+//            // Wait for START message from the server
+//            String response = reader.readLine();
+//            if (response != null && response.startsWith("START")) {
+//                return true; // Connection successful
+//            }
+
             String response = reader.readLine();
-            if (response != null && response.startsWith("START")) {
-                return true; // Connection successful
-            }
+            System.out.println("The server said : " + response);
+
+            // Close down the connection
+            socket.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

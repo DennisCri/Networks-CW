@@ -19,7 +19,7 @@ import java.io.IOException;
 
 // DO NOT EDIT starts
 interface FullNodeInterface {
-    public boolean listen(String ipAddress, int portNumber) throws IOException;
+    public boolean listen(String ipAddress, int portNumber);
     public void handleIncomingConnections(String startingNodeName, String startingNodeAddress);
 }
 // DO NOT EDIT ends
@@ -27,7 +27,7 @@ interface FullNodeInterface {
 
 public class FullNode implements FullNodeInterface {
 
-    public boolean listen(String ipAddress, int portNumber) throws IOException {
+    public boolean listen(String ipAddress, int portNumber) {
         String IPAddressString = "127.0.0.1";
         InetAddress host = InetAddress.getByName(IPAddressString);
 
@@ -42,16 +42,6 @@ public class FullNode implements FullNodeInterface {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         Writer writer = new OutputStreamWriter(clientSocket.getOutputStream());
-
-        // We can read what the client has said
-        String message = reader.readLine();
-        System.out.println("The client said : " + message);
-
-        // Sending a message to the client at the other end of the socket
-        System.out.println("Sending a message to the client");
-        writer.write("Nice to meet you\n");
-        writer.flush();
-
 
 	// Implement this!
 	// Return true if the node can accept incoming connections

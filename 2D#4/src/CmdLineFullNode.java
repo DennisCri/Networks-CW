@@ -5,12 +5,10 @@
 // It should work with your submission without any changes.
 // This should make your testing easier.
 
-import java.io.IOException;
-
 // DO NOT EDIT starts
 public class CmdLineFullNode {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if (args.length != 4) {
             System.err.println("Usage error!");
             System.err.println("DSTStoreCmdLine startingNodeName startingNodeAddress ipAddress portNumber");
