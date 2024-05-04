@@ -10,20 +10,23 @@ import java.security.MessageDigest;
 
 public class HashID {
 
-    public static String computeHashID(String line) throws Exception {
-	if (line.endsWith("\n")) {
-	    // What this does and how it works is covered in a later lecture
-	    MessageDigest md = MessageDigest.getInstance("SHA-256");
-	    md.update(line.getBytes(StandardCharsets.UTF_8));
-	    byte[] hashBytes = md.digest();
+	public static String computeHashID(String line) throws Exception {
+		if (line.endsWith("\n")) {
+			// What this does and how it works is covered in a later lecture
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(line.getBytes(StandardCharsets.UTF_8));
+			byte[] digest = md.digest();
 
-		// Convert byte array to hexadecimal string
-		BigInteger hashBigInt = new BigInteger(1, hashBytes);
-		return hashBigInt.toString(16);
+			// Convert the byte array to a hexadecimal string
+			StringBuilder hexString = new StringBuilder();
+			for (byte b : digest) {
+				hexString.append(Integer.toHexString(0xFF & b));
+			}
+			return hexString.toString();
 
-	} else {
-	    // 2D#4 computes hashIDs of lines, i.e. strings ending with '\n'
-	    throw new Exception("No new line at the end of input to HashID");
+		} else {
+			// 2D#4 computes hashIDs of lines, i.e. strings ending with '\n'
+			throw new Exception("No new line at the end of input to HashID");
+		}
 	}
-    }
 }
