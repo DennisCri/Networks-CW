@@ -47,8 +47,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
             // Wait for START message from the server
             String response = reader.readLine();
             if (response != null && response.startsWith("START")) {
-                System.out.println("Connection successful");
-                System.out.println("The server said : " + response);
+                System.out.println("Connection successful. The server said : " + response);
                 return true; // Connection successful
             }
 
