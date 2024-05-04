@@ -72,34 +72,58 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
 
     public String get(String key) {
-        try {
-            // Send GET request
-            writer.write("GET? " + key.length() + "\n" + key);
-            writer.flush();
+//        try {
+//            // Send GET request
+//            writer.write("GET? " + key.length() + "\n" + key);
+//            writer.flush();
+//
+//            // Read response
+//            String response = reader.readLine();
+//            if (response != null && response.startsWith("VALUE")) {
+//                // Value found, extract and return
+//                String[] parts = response.split(" ");
+//                int valueLength = Integer.parseInt(parts[1]);
+//                StringBuilder valueBuilder = new StringBuilder();
+//                for (int i = 0; i < valueLength; i++) {
+//                    valueBuilder.append(reader.readLine());
+//                    valueBuilder.append("\n");
+//                }
+//                return valueBuilder.toString().trim(); // Trim to remove trailing newline
+//            } else if (response != null && response.equals("NOPE")) {
+//                // Value not found
+//                return null;
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-            // Read response
+
+        try {
+            System.out.println("GET? 1");
+            System.out.println(key);
+
             String response = reader.readLine();
             if (response != null && response.startsWith("VALUE")) {
-                // Value found, extract and return
-                String[] parts = response.split(" ");
-                int valueLength = Integer.parseInt(parts[1]);
-                StringBuilder valueBuilder = new StringBuilder();
-                for (int i = 0; i < valueLength; i++) {
-                    valueBuilder.append(reader.readLine());
-                    valueBuilder.append("\n");
+                int lines = Integer.parseInt(response.split(" ")[1]);
+                StringBuilder retrievedValue = new StringBuilder();
+                for (int i = 0; i < lines; i++) {
+                    retrievedValue.append(reader.readLine()).append("\n");
                 }
-                return valueBuilder.toString().trim(); // Trim to remove trailing newline
-            } else if (response != null && response.equals("NOPE")) {
-                // Value not found
+                return retrievedValue.toString();
+            } else {
+                System.out.println("Value not found for key: " + key);
                 return null;
             }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error retrieving value: " + e.getMessage());
         }
-        //return null; // Error or unexpected response
-        // Implement this!
-        // Return the string if the get worked
-        // Return null if it didn't
-        return "Not implemented";
+        return null;
+//        //return null; // Error or unexpected response
+//        // Implement this!
+//        // Return the string if the get worked
+//        // Return null if it didn't
+//        return "Not implemented";
+//    }
     }
 }
