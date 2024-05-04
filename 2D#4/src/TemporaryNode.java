@@ -101,6 +101,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
                 return String.join(" ",values);
 
             } else if (Objects.equals(responses[0],"NOPE")) {
+                System.out.println(responses);
                 // Value not found
                 return null;
             }
