@@ -44,10 +44,13 @@ public class TemporaryNode implements TemporaryNodeInterface {
             writer.write("START 1 " + startingNodeName + "\n");
             writer.flush();
 
+            System.out.println("Connection successful");
+
             // Wait for START message from the server
             String response = reader.readLine();
             if (response != null && response.startsWith("START")) {
                 System.out.println("The server said : " + response);
+                System.out.println("Connection successful");
                 return true; // Connection successful
             }
 
@@ -72,9 +75,34 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
 
     public String get(String key) {
+        try {
+            // Send GET request
+            writer.write("GET? " + key.length() + "\n" + key);
+            writer.flush();
+
+            // Read response
+            String response = reader.readLine();
+            if (response != null && response.startsWith("VALUE")) {
+                // Value found, extract and return
+                String[] parts = response.split(" ");
+                int valueLength = Integer.parseInt(parts[1]);
+                StringBuilder valueBuilder = new StringBuilder();
+                for (int i = 0; i < valueLength; i++) {
+                    valueBuilder.append(reader.readLine());
+                    valueBuilder.append("\n");
+                }
+                return valueBuilder.toString().trim(); // Trim to remove trailing newline
+            } else if (response != null && response.equals("NOPE")) {
+                // Value not found
+                return null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // Error or unexpected response
         // Implement this!
         // Return the string if the get worked
         // Return null if it didn't
-        return "Not implemented";
+        //return "Not implemented";
     }
 }
