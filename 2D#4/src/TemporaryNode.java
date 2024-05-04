@@ -31,6 +31,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
     Writer writer;
 
     public boolean start(String startingNodeName, String startingNodeAddress) {
+
         System.out.println("Temporary node connecting to "+ startingNodeAddress);
         String[] address = startingNodeAddress.split(":");
         try {
