@@ -15,6 +15,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 // DO NOT EDIT starts
 interface TemporaryNodeInterface {
@@ -73,7 +75,18 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
 
     public String get(String key) {
+        return getValue(key);
+    }
+
+    private String getValue(String key){
         try {
+            String hashID = null;
+            try {
+                hashID = HashID.computeHashID(key);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             String[] keys = key.split(" ");
             if (keys.length == 0){
                 return null;
@@ -103,12 +116,45 @@ public class TemporaryNode implements TemporaryNodeInterface {
             } else if (Objects.equals(responses[0],"NOPE")) {
                 System.out.println(responses);
                 // Value not found
-                return null;
+                // Value not found, try to find nearest nodes
+                return nearest(hashID);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return "not here";
+        return null;
     }
+    private String nearest(String hashID) {
+        try {
+            // Send NEAREST request
+            writer.write("NEAREST? " + hashID + "\n");
+            writer.flush();
+
+            // Read response
+            String response;
+            List<String> nodes = new ArrayList<>();
+            while ((response = reader.readLine()) != null) {
+                if (response.startsWith("NODES")) {
+                    int numNodes = Integer.parseInt(response.split(" ")[1]);
+                    for (int i = 0; i < numNodes; i++) {
+                        String nodeInfo = reader.readLine();
+                        nodes.add(nodeInfo);
+                    }
+                    break;
+                }
+            }
+
+            // Format and return the information about closest nodes
+            StringBuilder result = new StringBuilder();
+            result.append("Closest nodes:\n");
+            for (String node : nodes) {
+                result.append(node).append("\n");
+            }
+            return result.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
