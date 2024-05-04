@@ -107,6 +107,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return "not here";
     }
 }
