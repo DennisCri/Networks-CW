@@ -160,6 +160,10 @@ public class TemporaryNode implements TemporaryNodeInterface {
                 }
             }
 
+            if (nodes.isEmpty()) {
+                return "No closest nodes found";
+            }
+
             // Format and return the information about closest nodes
             StringBuilder result = new StringBuilder();
             result.append("Closest nodes:\n");
