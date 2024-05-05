@@ -50,6 +50,16 @@ public class FullNode implements FullNodeInterface {
         try {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                Writer writer = new OutputStreamWriter(clientSocket.getOutputStream());
+
+                if (reader.readLine().startsWith("START")) {
+                    writer.write("START 1 "+ startingNodeName+"\n");
+                    writer.flush();
+                }else{
+                    endCommunication("Invalid start request");
+                }
+
                 System.out.println("Incoming connection from: " + clientSocket.getInetAddress().getHostAddress());
 
                 handleConnection(clientSocket, startingNodeName, startingNodeAddress);
