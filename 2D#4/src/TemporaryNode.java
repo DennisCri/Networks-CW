@@ -2,17 +2,15 @@
 // Coursework 2023/2024
 //
 // Submission by
-// YOUR_NAME_GOES_HERE
-// YOUR_STUDENT_ID_NUMBER_GOES_HERE
-// YOUR_EMAIL_GOES_HERE
+// DENNIS CRISTE
+// 220058002
+// dennis.criste@city.ac.uk
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
 import java.util.ArrayList;
@@ -43,38 +41,32 @@ public class TemporaryNode implements TemporaryNodeInterface {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new OutputStreamWriter(socket.getOutputStream());
 
-            // Send START message
+            // Send start message
             writer.write("START 1 " + startingNodeName + "\n");
             writer.flush();
 
-            // Wait for START message from the server
+            // Wait for start message from the server
             String response = reader.readLine();
             if (response != null && response.startsWith("START")) {
                 System.out.println("Connection successful. The server said : " + response);
-                return true; // Connection successful
+                return true;
             }
 
-//            String response = reader.readLine();
-//            System.out.println("The server said : " + response);
-
-            // Close down the connection
             socket.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false; // Connection failed
+        return false;
     }
 
     public boolean store(String key, String value) {
         try {
-            // Send PUT? request
-            writer.write("PUT? 1 1\n"); // Assuming key and value each has only one line
+            writer.write("PUT? 1 1\n");
             writer.write(key);
             writer.write(value);
             writer.flush();
 
-            // Read response
             String response = reader.readLine();
             if ("SUCCESS".equals(response)) {
                 System.out.println("Store worked! :-)");
@@ -93,10 +85,6 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
 
     public String get(String key) {
-        return getValue(key);
-    }
-
-    private String getValue(String key){
         try {
             String hashID = null;
             try {
@@ -110,7 +98,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
                 return null;
             }
 
-            // Send GET request
+            // Send get request
             writer.write("GET? " + keys.length + "\n");
             System.out.println("GET? "+ keys.length);
             for (String s : keys){
@@ -122,7 +110,6 @@ public class TemporaryNode implements TemporaryNodeInterface {
             // Read response
             String[] responses = reader.readLine().split(" ");
             if (Objects.equals(responses[0],"VALUE")) {
-                // Value found, extract and return
                 System.out.println(responses[0]+ " "+ responses[1]);
                 String[] values = new String[Integer.parseInt(responses[1])];
                 for (int i = 0; i < Integer.parseInt(responses[1]); i++) {
@@ -133,8 +120,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
 
             } else if (Objects.equals(responses[0],"NOPE")) {
                 System.out.println(responses);
-                // Value not found
-                // Value not found, try to find nearest nodes
+
                 return nearest(hashID);
             }
         } catch (IOException e) {
@@ -144,7 +130,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
     private String nearest(String hashID) {
         try {
-            // Send NEAREST request
+            // Send nearest request
             writer.write("NEAREST? " + hashID + "\n");
             writer.flush();
 
@@ -162,12 +148,12 @@ public class TemporaryNode implements TemporaryNodeInterface {
                 }
             }
 
-            // Check if nodes were found
+            // Check if any nodes found
             if (nodes.isEmpty()) {
                 return "No closest nodes found";
             }
 
-            // Format and return the information about closest nodes
+            // Format and return info about closest nodes
             StringBuilder result = new StringBuilder();
             result.append("Closest nodes:\n");
             for (String node : nodes) {
@@ -180,9 +166,10 @@ public class TemporaryNode implements TemporaryNodeInterface {
         }
     }
 
+    //END message method
     public void endCommunication(String reason) {
         try {
-            // Send END message
+            // Send end message
             writer.write("END " + reason + "\n");
             writer.flush();
 

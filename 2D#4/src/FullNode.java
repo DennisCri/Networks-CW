@@ -2,9 +2,9 @@
 // Coursework 2023/2024
 //
 // Submission by
-// YOUR_NAME_GOES_HERE
-// YOUR_STUDENT_ID_NUMBER_GOES_HERE
-// YOUR_EMAIL_GOES_HERE
+// DENNIS CRISTE
+// 220058002
+// dennis.criste@city.ac.uk
 
 
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public class FullNode implements FullNodeInterface {
                 handleConnection(clientSocket, startingNodeName, startingNodeAddress);
             }
         } catch (IOException e) {
-            System.err.println("Error: Failed to accept incoming connection");
+            System.err.println("Failed to accept incoming connection");
             e.printStackTrace();
         }
     }
@@ -65,20 +65,17 @@ public class FullNode implements FullNodeInterface {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 Writer writer = new OutputStreamWriter(clientSocket.getOutputStream());
         ) {
-            // Read input from the client
+
             String request = reader.readLine();
 
-            // Process the request
             if (request != null) {
                 if (request.startsWith("GET")) {
-                    // Handle GET request
-                    String key = request.substring(4); // Remove "GET " prefix
+                    String key = request.substring(4);
                     String value = get(key);
                     writer.write(value + "\n");
                     writer.flush();
                 } else if (request.startsWith("PUT")) {
-                    // Handle PUT request
-                    String[] parts = request.substring(4).split(" ", 2); // Remove "PUT " prefix and split key and value
+                    String[] parts = request.substring(4).split(" ", 2);
                     String key = parts[0];
                     String value = parts[1];
                     boolean success = store(key, value);
@@ -89,31 +86,25 @@ public class FullNode implements FullNodeInterface {
                     }
                     writer.flush();
                 } else if (request.startsWith("NEAREST")) {
-                    // Handle NEAREST request
-                    String hashID = request.substring(8); // Remove "NEAREST " prefix
+                    String hashID = request.substring(8);
                     String nearestNodes = nearest(hashID);
                     writer.write(nearestNodes);
                     writer.flush();
                 } else if (request.startsWith("END")) {
-                    // Handle END request
-                    String reason = request.substring(4); // Remove "END " prefix
+                    String reason = request.substring(4);
                     System.out.println("Connection ended: " + reason);
                     clientSocket.close();
-                    return;
-                } else {
-                    // Unknown request
-                    // Handle or ignore as needed
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error: Failed to handle connection");
+            System.err.println("Failed to handle connection");
             e.printStackTrace();
         } finally {
             try {
                 // Close the client socket
                 clientSocket.close();
             } catch (IOException e) {
-                System.err.println("Error: Failed to close client socket");
+                System.err.println("Failed to close client socket");
                 e.printStackTrace();
             }
         }
@@ -133,7 +124,7 @@ public class FullNode implements FullNodeInterface {
                 return null;
             }
 
-            // Send GET request
+            // Send get request
             writer.write("GET? " + keys.length + "\n");
             System.out.println("GET? "+ keys.length);
             for (String s : keys){
@@ -145,7 +136,6 @@ public class FullNode implements FullNodeInterface {
             // Read response
             String[] responses = reader.readLine().split(" ");
             if (Objects.equals(responses[0],"VALUE")) {
-                // Value found, extract and return
                 System.out.println(responses[0]+ " "+ responses[1]);
                 String[] values = new String[Integer.parseInt(responses[1])];
                 for (int i = 0; i < Integer.parseInt(responses[1]); i++) {
@@ -156,8 +146,7 @@ public class FullNode implements FullNodeInterface {
 
             } else if (Objects.equals(responses[0],"NOPE")) {
                 System.out.println(responses);
-                // Value not found
-                // Value not found, try to find nearest nodes
+
                 return nearest(hashID);
             }
         } catch (IOException e) {
@@ -168,13 +157,13 @@ public class FullNode implements FullNodeInterface {
 
     private boolean store(String key, String value) {
         try {
-            // Send PUT? request
-            writer.write("PUT? 1 1\n"); // Assuming key and value each has only one line
+
+            writer.write("PUT? 1 1\n");
             writer.write(key);
             writer.write(value);
             writer.flush();
 
-            // Read response
+
             String response = reader.readLine();
             if ("SUCCESS".equals(response)) {
                 System.out.println("Store worked! :-)");
@@ -194,11 +183,10 @@ public class FullNode implements FullNodeInterface {
 
     private String nearest(String hashID) {
         try {
-            // Send NEAREST request
+
             writer.write("NEAREST? " + hashID + "\n");
             writer.flush();
 
-            // Read response
             String response;
             List<String> nodes = new ArrayList<>();
             while ((response = reader.readLine()) != null) {
@@ -217,7 +205,7 @@ public class FullNode implements FullNodeInterface {
                 return "No closest nodes found";
             }
 
-            // Format and return the information about closest nodes
+            // Format and return info about closest nodes
             StringBuilder result = new StringBuilder();
             result.append("Closest nodes:\n");
             for (String node : nodes) {
@@ -231,7 +219,7 @@ public class FullNode implements FullNodeInterface {
     }
     public void endCommunication(String reason) {
         try {
-            // Send END message
+            // Send end message
             writer.write("END " + reason + "\n");
             writer.flush();
 

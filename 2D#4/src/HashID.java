@@ -17,7 +17,7 @@ public class HashID {
 			md.update(line.getBytes(StandardCharsets.UTF_8));
 			byte[] digest = md.digest();
 
-			// Convert the byte array to a hexadecimal string
+			// Convert byte array to a hex string
 			StringBuilder hexString = new StringBuilder();
 			for (byte b : digest) {
 				hexString.append(Integer.toHexString(0xFF & b));
