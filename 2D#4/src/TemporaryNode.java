@@ -67,11 +67,27 @@ public class TemporaryNode implements TemporaryNodeInterface {
     }
 
     public boolean store(String key, String value) {
+        try {
+            // Send STORE request
+            writer.write("STORE\n");
+            writer.write(key + "\n");
+            writer.write(value + "\n");
+            writer.flush();
 
-        // Implement this!
-        // Return true if the store worked
-        // Return false if the store failed
-        return true;
+            // Read response
+            String response = reader.readLine();
+            if (Objects.equals(response, "STORED")) {
+                // Store successful
+                return true;
+            } else {
+                // Store failed
+                System.err.println("Store failed");
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String get(String key) {
