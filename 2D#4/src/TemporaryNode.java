@@ -160,6 +160,7 @@ public class TemporaryNode implements TemporaryNodeInterface {
                 }
             }
 
+            // Check if nodes were found
             if (nodes.isEmpty()) {
                 return "No closest nodes found";
             }
