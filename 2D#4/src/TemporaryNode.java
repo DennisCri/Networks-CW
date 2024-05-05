@@ -180,4 +180,17 @@ public class TemporaryNode implements TemporaryNodeInterface {
         }
     }
 
+    public void endCommunication(String reason) {
+        try {
+            // Send END message
+            writer.write("END " + reason + "\n");
+            writer.flush();
+
+            // Close the connection
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
