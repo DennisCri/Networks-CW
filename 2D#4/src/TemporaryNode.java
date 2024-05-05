@@ -68,20 +68,22 @@ public class TemporaryNode implements TemporaryNodeInterface {
 
     public boolean store(String key, String value) {
         try {
-            // Send STORE request
-            writer.write("STORE\n");
-            writer.write(key + "\n");
-            writer.write(value + "\n");
+            // Send PUT? request
+            writer.write("PUT? 1 1\n"); // Assuming key and value each has only one line
+            writer.write(key);
+            writer.write(value);
             writer.flush();
 
             // Read response
             String response = reader.readLine();
-            if (Objects.equals(response, "STORED")) {
-                // Store successful
+            if ("SUCCESS".equals(response)) {
+                System.out.println("Store worked! :-)");
                 return true;
+            } else if ("FAILED".equals(response)) {
+                System.out.println("Store failed! :-(");
+                return false;
             } else {
-                // Store failed
-                System.err.println("Store failed");
+                System.err.println("Unexpected response from server: " + response);
                 return false;
             }
         } catch (IOException e) {
